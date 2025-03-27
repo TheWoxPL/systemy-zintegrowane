@@ -43,7 +43,7 @@ export const BON = [
   {
     name: 'Noga',
     level: 1,
-    required: 1,
+    required: 4,
     parent: 'Stół',
     realization_time: 2,
     stock: 40,

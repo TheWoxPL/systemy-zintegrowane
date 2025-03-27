@@ -18,37 +18,42 @@ const calculateGHP = (GHP, BON) => {
 };
 
 const calculateItem = (item, parent) => {
-  console.log(parent);
   for (let i = 0; i < item.schedule.length; i++) {
     // Assign values to shcedule if other than 0, edge case
     if (parent.schedule[i] != 0) {
       if (i < parent.realization_time) {
         console.log('Edge Case, implement later');
       }
-      item.schedule[i - parent.realization_time].demand =
+      item.schedule[i - parent.realization_time].totalDemand =
         parent.schedule[i] * item.required;
     }
 
     if (i === 0) {
-      item.schedule[i].stock = item.stock;
+      item.schedule[i].estimatedStock = item.stock;
     } else {
-      const calculatedStock =
-        item.schedule[i - 1].stock -
-        item.schedule[i].demand +
+      let calculatedStock =
+        item.schedule[i - 1].estimatedStock -
+        item.schedule[i].totalDemand +
         item.schedule[i].production;
       if(calculatedStock <0){
         console.log("Attention, negative stock");
+        const netDemand = calculatedStock * -1;
+        item.schedule[i].netDemand = netDemand;
+        item.schedule[i-item.realization_time].plannedOrders = item.partSize;
+        item.schedule[i].plannedReceiptOfOrders = item.partSize;
+        calculatedStock = item.schedule[i].plannedReceiptOfOrders + item.schedule[i-1].estimatedStock - item.schedule[i].totalDemand;
       }
-      item.schedule[i].stock = calculatedStock 
+      item.schedule[i].estimatedStock = calculatedStock 
     }
   }
+  console.log({...item});
   return { ...item };
 };
 
 const calculateMRP = (GHP, BON) => {
   const maxLevel = Math.max(...BON.map((item) => item.level));
   const schedule = Array.from({ length: GHP.schedule.length }, (_, i) => {
-    return { week: i + 1, demand: 0, production: 0, stock: 0 };
+    return { week: i + 1, totalDemand: 0, production: 0, estimatedStock: 0, netDemand: 0, plannedOrders: 0 , plannedReceiptOfOrders: 0};
   });
   const MRP = BON.map((item) => ({ ...item, schedule: schedule }));
 
@@ -65,6 +70,7 @@ const calculateMRP = (GHP, BON) => {
 
         // If level 1 BON part, send production part from parent schedule and realization time
         if (i === 1) {
+          // console.log(MRP[1], MRP[2]);
           MRP[j] = calculateItem(MRP[j], {
             schedule: parent.schedule.map((item) => item.production),
             realization_time: parent.realization_time,
