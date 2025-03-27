@@ -54,7 +54,8 @@ export const BON = [
     level: 1,
     required: 1,
     parent: 'Stół',
-    realization_time: 3,
+    // changed to 1, becuase of problem when realization time goes under 1 week
+    realization_time: 3, 
     stock: 22,
     partSize: 40, 
   },

@@ -53,7 +53,18 @@ const calculateItem = (item, parent, MRP) => {
 
 const calculateMRP = (GHP, BON) => {
   const maxLevel = Math.max(...BON.map((item) => item.level));
-  const schedule = Array.from({ length: GHP.schedule.length }, (_, i) => {
+  // const schedule = Array.from({ length: GHP.schedule.length }, (_, i) => {
+  //   return {
+  //     week: i + 1,
+  //     totalDemand: 0,
+  //     production: 0,
+  //     estimatedStock: 0,
+  //     netDemand: 0,
+  //     plannedOrders: 0,
+  //     plannedReceiptOfOrders: 0,
+  //   };
+  // });
+  const MRP = BON.map((item) => ({ ...item, schedule: Array.from({ length: GHP.schedule.length }, (_, i) => {
     return {
       week: i + 1,
       totalDemand: 0,
@@ -63,8 +74,7 @@ const calculateMRP = (GHP, BON) => {
       plannedOrders: 0,
       plannedReceiptOfOrders: 0,
     };
-  });
-  const MRP = BON.map((item) => ({ ...item, schedule: schedule }));
+  }) }));
 
   for (let i = 0; i <= maxLevel; i++) {
     for (let j = 0; j < MRP.length; j++) {
