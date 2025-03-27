@@ -17,10 +17,33 @@ const calculateGHP = (GHP, BON) => {
   return GHP;
 };
 
-const calculateItem = (item, parentSchedule) => {
-  // console.log(item);
-  // console.log(parentSchedule);
-}
+const calculateItem = (item, parent) => {
+  console.log(parent);
+  for (let i = 0; i < item.schedule.length; i++) {
+    // Assign values to shcedule if other than 0, edge case
+    if (parent.schedule[i] != 0) {
+      if (i < parent.realization_time) {
+        console.log('Edge Case, implement later');
+      }
+      item.schedule[i - parent.realization_time].demand =
+        parent.schedule[i] * item.required;
+    }
+
+    if (i === 0) {
+      item.schedule[i].stock = item.stock;
+    } else {
+      const calculatedStock =
+        item.schedule[i - 1].stock -
+        item.schedule[i].demand +
+        item.schedule[i].production;
+      if(calculatedStock <0){
+        console.log("Attention, negative stock");
+      }
+      item.schedule[i].stock = calculatedStock 
+    }
+  }
+  return { ...item };
+};
 
 const calculateMRP = (GHP, BON) => {
   const maxLevel = Math.max(...BON.map((item) => item.level));
@@ -31,18 +54,24 @@ const calculateMRP = (GHP, BON) => {
 
   for (let i = 0; i <= maxLevel; i++) {
     for (let j = 0; j < MRP.length; j++) {
-      let item = MRP[j];
-      if(item.level === 0) {
-        item = {...item, schedule: GHP.schedule, asd: 'asd'};
-        console.log(item);
-        return;
+      // 0 level BON part, fill up schedule from GHP
+      if (MRP[j].level === i) {
+        if (i === 0) {
+          MRP[j] = { ...MRP[j], schedule: GHP.schedule };
+          break;
+        }
+
+        const parent = MRP.find((item) => item.name === MRP[j].parent);
+
+        // If level 1 BON part, send production part from parent schedule and realization time
+        if (i === 1) {
+          MRP[j] = calculateItem(MRP[j], {
+            schedule: parent.schedule.map((item) => item.production),
+            realization_time: parent.realization_time,
+          });
+        }
       }
     }
-
-    return;
-      // const parentSchedule = MRP.find((parent) => parent.name === item.parent).schedule;
-      // calculateItem(item, parentSchedule);
-
   }
 
   return MRP;
