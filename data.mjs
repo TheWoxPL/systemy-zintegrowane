@@ -1,37 +1,4 @@
-// export const BON = {
-//   // name: 'Rower',
-//   // level: 0,
-//   // items: [
-//   //   {
-//   //     name: 'Koło',
-//   //     level: 1,
-//   //     required: 2,
-//   //     items: [
-//   //       { name: 'Szprycha', level: 2, required: 32, items: [] },
-//   //       { name: 'Opona', level: 2, required: 1, items: [] },
-//   //     ],
-//   //   },
-//   //   {
-//   //     name: 'Rama',
-//   //     level: 1,
-//   //     items: [
-//   //       { name: 'Kierownica', level: 2, required: 1, items: [] },
-//   //       { name: 'Siodło', level: 2, required: 1, items: [] },
-//   //       { name: 'Hamulec', level: 2, required: 2, items: [] },
-//   //       { name: 'Pedał', level: 2, required: 2, items: [] },
-//   //     ],
-//   //   },
-//   //   { name: 'Łańcuch', level: 1, required: 1, items: [] },
-//   // ],
-//   name: 'Stół',
-//   level: 0,
-//   maxLevel: 2,
-//   required: 1,
-//   parent: null,
-//   realization_time: 0,
-// };
-
-export const BON = [
+export const BOM = [
   {
     name: 'Stół',
     level: 0,
@@ -54,7 +21,6 @@ export const BON = [
     level: 1,
     required: 1,
     parent: 'Stół',
-    // changed to 1, becuase of problem when realization time goes under 1 week
     realization_time: 3, 
     stock: 22,
     partSize: 40, 
