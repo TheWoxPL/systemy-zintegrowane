@@ -121,6 +121,16 @@ const data = calculateMRP(GHP, BOM);
 const generateTables = (data) => {
   const tableContainer = document.querySelector('#table-container'); // Corrected selector
 
+  // Map English property names to Polish equivalents
+  const propertyTranslations = {
+    totalDemand: 'Całkowite zapotrzebowanie',
+    plannedParties: 'Planowane przyjęcia',
+    estimatedStock: 'Przewidiwane na stanie',
+    netDemand: 'Zapotrzebowanie netto',
+    plannedOrders: 'Planowane zamówienia',
+    plannedReceiptOfOrders: 'Planowane przyjęcia zamówień',
+  };
+
   data.forEach((item) => {
     // Create a table for each item
     const table = document.createElement('table');
@@ -129,18 +139,18 @@ const generateTables = (data) => {
 
     // Add a caption with the item's name
     const caption = document.createElement('caption');
-    caption.textContent = `Item: ${item.name} (Level: ${item.level})`;
+    caption.textContent = `Przedmiot: ${item.name} (Poziom: ${item.level})`;
     table.appendChild(caption);
 
     // Create the header row
     const headerRow = document.createElement('tr');
     const th = document.createElement('th');
-    th.textContent = 'Property';
+    th.textContent = 'Tydzień';
     headerRow.appendChild(th);
 
     item.schedule.forEach((week) => {
       const th = document.createElement('th');
-      th.textContent = `Week ${week.week}`;
+      th.textContent = `Tydzień ${week.week}`;
       headerRow.appendChild(th);
     });
     table.appendChild(headerRow);
@@ -150,7 +160,7 @@ const generateTables = (data) => {
     properties.forEach((property) => {
       const row = document.createElement('tr');
       const td = document.createElement('td');
-      td.textContent = property;
+      td.textContent = propertyTranslations[property] || property; 
       row.appendChild(td);
 
       item.schedule.forEach((week) => {
