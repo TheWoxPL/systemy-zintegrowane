@@ -112,5 +112,60 @@ const calculateMRP = (GHP, BOM) => {
   return MRP;
 };
 
-console.log(calculateGHP(GHP, BOM));
-console.log(calculateMRP(GHP, BOM));
+// console.log(calculateGHP(GHP, BOM));
+// console.log(calculateMRP(GHP, BOM));
+
+calculateGHP(GHP, BOM);
+const data = calculateMRP(GHP, BOM);
+
+const generateTables = (data) => {
+  const tableContainer = document.querySelector('#table-container'); // Corrected selector
+
+  data.forEach((item) => {
+    // Create a table for each item
+    const table = document.createElement('table');
+    table.border = '1';
+    table.style.marginBottom = '20px';
+
+    // Add a caption with the item's name
+    const caption = document.createElement('caption');
+    caption.textContent = `Item: ${item.name} (Level: ${item.level})`;
+    table.appendChild(caption);
+
+    // Create the header row
+    const headerRow = document.createElement('tr');
+    const th = document.createElement('th');
+    th.textContent = 'Property';
+    headerRow.appendChild(th);
+
+    item.schedule.forEach((week) => {
+      const th = document.createElement('th');
+      th.textContent = `Week ${week.week}`;
+      headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    // Add rows for each property
+    const properties = Object.keys(item.schedule[0]).filter((key) => key !== 'week');
+    properties.forEach((property) => {
+      const row = document.createElement('tr');
+      const td = document.createElement('td');
+      td.textContent = property;
+      row.appendChild(td);
+
+      item.schedule.forEach((week) => {
+        const td = document.createElement('td');
+        td.textContent = week[property];
+        row.appendChild(td);
+      });
+
+      table.appendChild(row);
+    });
+
+    // Append the table to the container
+    tableContainer.appendChild(table);
+  });
+};
+
+// Call the function to generate tables
+generateTables(data);
